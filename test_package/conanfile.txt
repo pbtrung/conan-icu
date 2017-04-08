@@ -1,0 +1,5 @@
+[requires]
+icu/59rc@pbtrung/stable
+
+[generators]
+cmake
