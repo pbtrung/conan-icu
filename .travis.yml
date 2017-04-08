@@ -6,73 +6,41 @@ language: python
 env:
   global:
     - CONAN_UPLOAD=1
-    - CONAN_REFERENCE="icu/59rc"
+    - CONAN_REFERENCE="apache-apr/1.5.2"
     - CONAN_USERNAME="pbtrung"
     - CONAN_CHANNEL="stable"
-    - CONAN_TOTAL_PAGES=2
+    - CONAN_TOTAL_PAGES=1
+    - CONAN_CURRENT_PAGE=1
 
   matrix:
-    - CONAN_GCC_VERSIONS=4.9 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=1
-    - CONAN_GCC_VERSIONS=4.9 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=2
-
-    - CONAN_GCC_VERSIONS=5.3 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=1
-    - CONAN_GCC_VERSIONS=5.3 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=2
-
-    - CONAN_GCC_VERSIONS=5.4 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=1
-    - CONAN_GCC_VERSIONS=5.4 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=2
-
-    - CONAN_GCC_VERSIONS=6.2 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=1
-    - CONAN_GCC_VERSIONS=6.2 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=2
-
-    - CONAN_GCC_VERSIONS=6.3 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=1
-    - CONAN_GCC_VERSIONS=6.3 CONAN_USE_DOCKER=1 CONAN_CURRENT_PAGE=2
+    - CONAN_GCC_VERSIONS=4.9 CONAN_USE_DOCKER=1
+    - CONAN_GCC_VERSIONS=5.3 CONAN_USE_DOCKER=1
+    - CONAN_GCC_VERSIONS=5.4 CONAN_USE_DOCKER=1
+    - CONAN_GCC_VERSIONS=6.2 CONAN_USE_DOCKER=1
+    - CONAN_GCC_VERSIONS=6.3 CONAN_USE_DOCKER=1
 
 matrix:
   include:
     - os: osx
       osx_image: xcode8
       language: generic
-      env: CONAN_CURRENT_PAGE=1
-    - os: osx
-      osx_image: xcode8
-      language: generic
-      env: CONAN_CURRENT_PAGE=2
-
+      env:
     - os: osx
       osx_image: xcode7.3
       language: generic
-      env: CONAN_CURRENT_PAGE=1
-     - os: osx
-      osx_image: xcode7.3
-      language: generic
-      env: CONAN_CURRENT_PAGE=2
-
+      env:
     - os: osx
       osx_image: xcode7.1
       language: generic
-      env: CONAN_CURRENT_PAGE=1
-    - os: osx
-      osx_image: xcode7.1
-      language: generic
-      env: CONAN_CURRENT_PAGE=2
-
+      env:
     - os: osx
       osx_image: xcode6.4
       language: generic
-      env: CONAN_CURRENT_PAGE=1
-    - os: osx
-      osx_image: xcode6.4
-      language: generic
-      env: CONAN_CURRENT_PAGE=2
-
+      env:
     - os: osx
       osx_image: xcode6.2
       language: generic
-      env: CONAN_CURRENT_PAGE=1
-    - os: osx
-      osx_image: xcode6.2
-      language: generic
-      env: CONAN_CURRENT_PAGE=2
+      env:
 
 install:
   - ./.travis/install.sh
