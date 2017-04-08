@@ -65,7 +65,7 @@ class IcuConan(ConanFile):
         env_build = AutoToolsBuildEnvironment(self)
         with tools.environment_append(env_build.vars):
             self.run("chmod +x icu/source/runConfigureICU icu/source/configure icu/source/install-sh")
-            self.run("sh icu/source/runConfigureICU %s %s" % (target_os, flags))
+            self.run("icu/source/runConfigureICU %s %s" % (target_os, flags))
             self.run("make")
             self.run("make install")
 
