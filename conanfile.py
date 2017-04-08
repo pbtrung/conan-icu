@@ -3,6 +3,7 @@ import os
 from conans.tools import download, unzip
 
 class IcuConan(ConanFile):
+    description = "International Components for Unicode (ICU)"
     name = "icu"
     version = "59rc"
     branch = "master"
