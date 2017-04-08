@@ -62,11 +62,12 @@ class IcuConan(ConanFile):
         else:
             target_os = 'Linux'
 
-        env = ConfigureEnvironment(self.deps_cpp_info, self.settings)
-        self.run("chmod +x icu/source/runConfigureICU icu/source/configure icu/source/install-sh")
-        self.run("%s icu/source/runConfigureICU %s %s" % (env.command_line, target_os, flags))
-        self.run("%s make" % env.command_line)
-        self.run("%s make install" % env.command_line)
+        env_build = AutoToolsBuildEnvironment(self)
+        with tools.environment_append(env_build.vars):
+            self.run("chmod +x icu/source/runConfigureICU icu/source/configure icu/source/install-sh")
+            self.run("sh icu/source/runConfigureICU %s %s" % (target_os, flags))
+            self.run("make")
+            self.run("make install")
 
     def package(self):
         self.copy("*.h", "include", src="icu/include", keep_path=True)
