@@ -15,7 +15,11 @@ class IcuConan(ConanFile):
     generators = "cmake"
 
     def source(self):
-        zip_name = "icu4c-%s-src.zip" % self.version.replace(".", "_")
+        if self.settings.os == "Windows":
+            zip_name = "icu4c-%s-src.zip" % self.version.replace(".", "_")
+        else:
+            zip_name = "icu4c-%s-src.tgz" % self.version.replace(".", "_")
+
         url = "http://download.icu-project.org/files/icu4c/%s/%s" % (self.version, zip_name)
         download(url, zip_name)
         unzip(zip_name)
