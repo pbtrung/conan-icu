@@ -1,19 +1,17 @@
 build: false
 environment:
   PYTHON: "C:\\Python27"
-  PYTHON_VERSION: "2.7.11"
+  PYTHON_VERSION: "2.7.12"
   PYTHON_ARCH: "32"
 
   CONAN_UPLOAD: 1
   CONAN_REFERENCE: "icu/59rc"
   CONAN_USERNAME: "pbtrung"
   CONAN_CHANNEL: "stable"
-  CONAN_TOTAL_PAGES: 3
+  CONAN_TOTAL_PAGES: 1
 
   matrix:
     - CONAN_CURRENT_PAGE: 1
-    - CONAN_CURRENT_PAGE: 2
-    - CONAN_CURRENT_PAGE: 3
 
 install:
   - set PATH=%PATH%;%PYTHON%/Scripts/
