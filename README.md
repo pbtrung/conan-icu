@@ -1,2 +1,2 @@
-# conan-icu
+# conan-icu ![alt License](https://dl.dropboxusercontent.com/s/cul64jahsd3cg14/license.svg?dl=0) [![Build Status](https://travis-ci.org/pbtrung/conan-icu.svg?branch=master)](https://travis-ci.org/pbtrung/conan-icu) [![Build Status](https://ci.appveyor.com/api/projects/status/07lct413nf2t563a?svg=true)](https://ci.appveyor.com/project/pbtrung/conan-icu)
 [Conan](https://conan.io) package recipe for [ICU](http://site.icu-project.org)
