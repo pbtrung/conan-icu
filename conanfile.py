@@ -1,14 +1,13 @@
 from conans import ConanFile, ConfigureEnvironment
 import os
-from glob import glob
-from conans.tools import download, unzip, os_info, cpu_count
+from conans.tools import download, unzip
 
 class IcuConan(ConanFile):
     name = "icu"
     version = "59rc"
     branch = "master"
-    url = "https://github.com/pbtrung/conan-icu"
     license = "http://source.icu-project.org/repos/icu/icu/tags/release-58-1/LICENSE"
+    url = "https://github.com/pbtrung/conan-icu"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = "shared=True"
@@ -27,7 +26,7 @@ class IcuConan(ConanFile):
             self.options.shared = False
 
     def build(self):
-        if self.settings.compiler == "Visual Studio":
+        if self.settings.os == "Windows":
             self.build_windows()
         else:
             self.build_with_configure()
@@ -43,79 +42,52 @@ class IcuConan(ConanFile):
         command_line = "/upgrade"
         self.run("devenv %s %s" % (sln_file, command_line))
 
-        runtime_map = {
-            "MDd": "MultiThreadedDebugDLL",
-            "MD": "MultiThreadedDLL",
-            "MTd": "MultiThreadedDebug",
-            "MT": "MultiThreaded"
-        }
-        runtime = runtime_map[str(self.settings.compiler.runtime)]
-        project_file_paths = glob("*.vcxproj")
-        for file_path in project_file_paths:
-            encoding = self.detect_by_bom(file_path, "utf-8")
-            patched_content = self.load(file_path, encoding)
-            patched_content = re.sub("(?<=<RuntimeLibrary>)[^<]*", runtime, patched_content)
-            self.save(file_path, patched_content, encoding)
-
-        # build
-        command_line = "/build \"%s|%s\" /project i18n" % (self.settings.build_type, arch)
+        # and build
+        command_line = "/build \"Release|%s\" /project i18n" % arch
         self.run("devenv %s %s" % (sln_file, command_line))
 
-    def normalize_prefix_path(self, p):
-        if os_info.is_windows:
-            drive, path = os.path.splitdrive(p)
-            msys_path = path.replace('\\', '/')
-            if drive:
-                return '/' + drive.replace(':', '') + msys_path
-            else:
-                return msys_path
-        else:
-            return p
-
     def build_with_configure(self):
-        flags = "--prefix='%s' --enable-tests=no --enable-samples=no" % self.normalize_prefix_path(self.package_folder)
+        flags = '--prefix=%s --enable-tests=no --enable-samples=no' % self.package_folder
         if self.options.shared == 'True':
             flags += ' --disable-static --enable-shared'
         else:
             flags += ' --enable-static --disable-shared'
 
-        if os_info.is_macos:
-            conf_name = 'MacOSX'
-        elif os_info.is_windows:
-            conf_name = 'MinGW'
-        elif os_info.is_linux and self.settings.compiler == "gcc":
-            conf_name = 'Linux/gcc'
+        if self.settings.build_type == 'Debug':
+            flags += ' --enable-debug --disable-release'
+
+        if self.settings.os == 'Macos':
+            target_os = 'MacOSX'
         else:
-            conf_name = self.settings.os
+            target_os = 'Linux'
 
         env = ConfigureEnvironment(self.deps_cpp_info, self.settings)
-        command_env = env.command_line_env
-        if os_info.is_windows:
-            command_env += " &&"
-
         self.run("chmod +x icu/source/runConfigureICU icu/source/configure icu/source/install-sh")
-        self.run("%s sh icu/source/runConfigureICU %s %s" % (command_env, conf_name, flags))
-        self.run("%s make -j %s" % (command_env, cpu_count()))
-        self.run("%s make install" % command_env)
+        self.run("%s icu/source/runConfigureICU %s %s" % (env.command_line, target_os, flags))
+        self.run("%s make" % env.command_line)
+        self.run("%s make install" % env.command_line)
 
     def package(self):
-        if self.settings.compiler != "Visual Studio":
-            return
-
         self.copy("*.h", "include", src="icu/include", keep_path=True)
-        if self.settings.arch == "x86_64":
-            build_suffix = "64"
-        else:
-            build_suffix = ""
 
-        self.copy(pattern="*.dll", dst="bin", src=("icu/bin%s" % build_suffix), keep_path=False)
-        self.copy(pattern="*.lib", dst="lib", src=("icu/lib%s" % build_suffix), keep_path=False)
+        if self.settings.os == "Windows":
+            if self.settings.arch == "x86_64":
+                build_suffix = "64"
+            else:
+                build_suffix = ""
+
+            if self.options.shared:
+                self.copy(pattern="*.dll", dst="bin", src=("icu/bin%s" % build_suffix), keep_path=False)
+
+            self.copy(pattern="*.lib", dst="lib", src=("icu/lib%s" % build_suffix), keep_path=False)
+
+        else:
+            self.copy( '*icu*.so', dst='lib', keep_path=False )
+            self.copy( '*icu*.a', dst='lib', keep_path=False )
+            self.copy( '*icu*.dylib', dst='lib', keep_path=False )
 
     def package_info(self):
-        if os_info.is_windows:
-            debug_suffix = ""
-            if self.settings.build_type == "Debug":
-                debug_suffix = "d"
-            self.cpp_info.libs = ["icuin" + debug_suffix, "icuuc" + debug_suffix]
+        if self.settings.os == "Windows":
+            self.cpp_info.libs = ["icuin", "icuuc", "icudt"]
         else:
             self.cpp_info.libs = ["icui18n", "icuuc", "icudata"]
