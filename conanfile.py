@@ -1,4 +1,4 @@
-from conans import ConanFile, ConfigureEnvironment
+from conans import ConanFile, AutoToolsBuildEnvironment, tools
 import os
 from conans.tools import download, unzip
 
