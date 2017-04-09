@@ -6,7 +6,7 @@ language: python
 env:
   global:
     - CONAN_UPLOAD=1
-    - CONAN_REFERENCE="icu/58.2"
+    - CONAN_REFERENCE="icu/59rc"
     - CONAN_USERNAME="pbtrung"
     - CONAN_CHANNEL="stable"
     - CONAN_TOTAL_PAGES=1
