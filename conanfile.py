@@ -5,7 +5,7 @@ from conans.tools import download, unzip
 class IcuConan(ConanFile):
     description = "International Components for Unicode (ICU)"
     name = "icu"
-    version = "58.2"
+    version = "59rc"
     branch = "master"
     license = "http://source.icu-project.org/repos/icu/icu/tags/release-58-1/LICENSE"
     url = "https://github.com/pbtrung/conan-icu"
